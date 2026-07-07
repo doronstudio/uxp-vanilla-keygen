@@ -101,14 +101,15 @@ Use `DOR_LICENSE_ENABLED=false` only for local development builds where you want
 
 ## Release Checklist
 
-1. Set production Keygen and update-check env values.
-2. Make sure `PLUGIN_VERSION`, `DOR_LOCAL_VERSION`, and `public/manifest.json` version match.
-3. Run:
+1. During development, use `.env.development` with `npm run dev` while testing changes in UDT.
+2. For release, set production Keygen and update-check values in `.env.production`.
+3. Make sure `PLUGIN_VERSION`, `DOR_LOCAL_VERSION`, and `public/manifest.json` version match.
+4. Run the production build:
 
 ```bash
 npm run build:prod
 ```
 
-4. Load `dist/manifest.json` in UDT.
-5. Verify activation, offline relaunch, Clear License, update notice behavior, and the unlocked workspace.
-6. Distribute only the generated `dist/` folder.
+5. Load `dist/manifest.json` in UDT.
+6. Verify activation, offline relaunch, Clear License, update notice behavior, and the unlocked workspace.
+7. Distribute only the generated `dist/` folder.
