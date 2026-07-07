@@ -25,6 +25,12 @@ Build a local licensed bundle:
 npm run build:dev
 ```
 
+Or start a development watcher that rebuilds `dist/` after source changes:
+
+```bash
+npm run dev
+```
+
 Then in Adobe UXP Developer Tool, add and load:
 
 ```text
@@ -37,6 +43,19 @@ For local UI work with the license gate bypassed:
 npm run build:dev:unlocked
 npm run watch:unlocked
 ```
+
+## Scripts And Env Files
+
+Webpack loads `.env.production` only when `NODE_ENV=production`. All other bundled commands use `.env.development`.
+
+| Command | Mode | Env file | Purpose |
+|---|---|---|---|
+| `npm run dev` | Development watch | `.env.development` | Rebuilds `dist/` while you work in UDT. |
+| `npm run watch` | Development watch | `.env.development` | Same as `npm run dev`; kept as an explicit watch alias. |
+| `npm run build:dev` | Development build | `.env.development` | Builds a licensed local development bundle once. |
+| `npm run build:dev:unlocked` | Development build | `.env.development` plus inline `DOR_LICENSE_ENABLED=false` and `DOR_BUILD_OBFUSCATE=false` | Builds once with the license gate bypassed for local UI work. |
+| `npm run watch:unlocked` | Development watch | `.env.development` plus inline `DOR_LICENSE_ENABLED=false` and `DOR_BUILD_OBFUSCATE=false` | Rebuilds while you work with the license gate bypassed. |
+| `npm run build:prod` | Production build | `.env.production` | Builds the production bundle for distribution. |
 
 ## Where To Build Your Plugin
 

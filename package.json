@@ -36,6 +36,7 @@
 		"webpack-obfuscator": "^3.5.1"
 	},
 	"scripts": {
+		"dev": "NODE_ENV=development webpack --watch",
 		"watch": "NODE_ENV=development webpack --watch",
 		"watch:unlocked": "DOR_LICENSE_ENABLED=false DOR_BUILD_OBFUSCATE=false NODE_ENV=development webpack --watch",
 		"build:prod": "NODE_ENV=production webpack",
