@@ -1,0 +1,10 @@
+node_modules
+server/vendor/
+server/plugins/
+server/.idea/
+dist/
+.env.development
+.env.production
+.env.local
+.vscode/
+.DS_Store

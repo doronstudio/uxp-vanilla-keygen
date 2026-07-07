@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="index.css">
+	<link rel="stylesheet" href="license.css">
+</head>
+<body>
+	<div id="MainContainer">
+		<%= require('html-loader!./license.html').default %>
+
+		<main class="container">
+			<section class="starter-shell" aria-label="Plugin workspace">
+				<header class="starter-header">
+					<div class="starter-mark" aria-hidden="true">UXP</div>
+					<div>
+						<h1>Vanilla UXP Keygen Starter</h1>
+						<p>Version <span data-plugin-version>1.0.0</span></p>
+					</div>
+				</header>
+
+				<section class="play-area">
+					<p class="eyebrow">Unlocked workspace</p>
+					<h2>Your play area</h2>
+					<p id="PlayAreaStatus">
+						Replace this starter screen with your plugin tools after the license gate unlocks.
+					</p>
+					<button id="PrimaryAction" type="button">Test starter action</button>
+				</section>
+			</section>
+		</main>
+	</div>
+</body>
+</html>

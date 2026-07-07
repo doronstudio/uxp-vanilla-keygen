@@ -1,0 +1,99 @@
+{
+  "id": "uxp-vanilla-keygen",
+  "name": "UXP Vanilla Keygen Starter",
+  "version": "1.0.0",
+  "main": "index.html",
+	"host": [
+		{
+    "app": "PS",
+    "minVersion": "23.5",
+    "data": {
+      "apiVersion": 2
+    }
+		}
+	],
+  "manifestVersion": 5,
+  "requiredPermissions": {
+		"enableUserInfo": true,
+		"allowCodeGenerationFromStrings": true,
+		"clipboard": "read",
+    "localFileSystem": "fullAccess",
+    "launchProcess": {
+			"schemes": ["https", "file", "plugin", "mailto"],
+			"extensions": [".pdf"]
+    },      
+    "webview": {
+      "allow": "yes",
+      "domains": "all"
+    },
+    "network": {
+      "domains": "all"
+    }
+  },
+  "permissions": {
+    "launchProcess": {
+			"schemes": "https",
+			"extensions": [".pdf", ".png", ".jpg", ".psd"]
+    }
+},    
+  "entrypoints": [
+		{
+      "type": "command",
+      "id": "checkForUpdates",
+      "label": "Check for Updates"
+    },
+		{
+      "type": "command",
+      "id": "clearLicense",
+      "label": "Clear License"
+    },
+    {
+      "type": "panel",
+      "id": "uxp-vanilla-keygen",
+      "label": {
+        "default": "UXP Vanilla Keygen Starter"
+      },
+      "minimumSize": {
+        "width": 300,
+        "height": 920
+      },
+      "maximumSize": {
+        "width": 1800,
+        "height": 920
+      },
+      "preferredDockedSize": {
+        "width": 300,
+        "height": 920
+      },
+      "preferredFloatingSize": {
+        "width": 300,
+        "height": 920
+      },
+      "icons": [
+        {
+            "width": 23, "height": 23, "path": "icons/dark.png",
+            "scale": [ 1, 2 ],
+            "theme": [ "darkest", "dark", "medium" ]
+        },
+        {
+					"width": 23,
+					"height": 23,
+					"path": "icons/light.png",
+					"scale": [1, 2],
+					"theme": ["lightest", "light"]
+        }
+            ]
+    }
+  ],
+
+  "icons": [
+        {
+			"width": 48,
+			"height": 48,
+			"path": "icons/plugin.png",
+			"scale": [1, 2],
+			"theme": ["darkest", "dark", "medium", "lightest", "light", "all"],
+			"species": ["pluginList"]
+        }
+    ]   
+}
