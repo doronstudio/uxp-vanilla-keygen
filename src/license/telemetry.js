@@ -1,6 +1,6 @@
 import licenseV2Config, { licensingConfig } from "./config";
 
-const pluginVersion = String(process.env.PLUGIN_VERSION || "2.0").trim() || "2.0";
+const pluginVersion = String(process.env.PLUGIN_VERSION || "0.0.0").trim() || "0.0.0";
 const localValidIntervalMs = Number(process.env.DOR_LICENSE_LOCAL_VALID_EVENT_INTERVAL_SECONDS || 86400) * 1000;
 const telemetryTimeoutMs = Number(process.env.DOR_LICENSE_EVENT_TIMEOUT_SECONDS || 3) * 1000;
 const lastEventAtByKey = new Map();

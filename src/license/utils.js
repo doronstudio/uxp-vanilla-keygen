@@ -20,7 +20,7 @@ import {
 import { emitLicenseEvent } from "./telemetry";
 
 const secureStorage = storage.secureStorage;
-const pluginVersion = String(process.env.PLUGIN_VERSION || "2.0").trim() || "2.0";
+const pluginVersion = String(process.env.PLUGIN_VERSION || "0.0.0").trim() || "0.0.0";
 let lastLocalLicenseFailure = null;
 const NETWORK_FAILURE_REASONS = new Set([
 	"network_error",

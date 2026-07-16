@@ -24,7 +24,25 @@ function normalizeVersion(value) {
 
 const manifestPath = path.join(__dirname, "public", "manifest.json");
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
-const envPluginVersion = normalizeVersion(process.env.PLUGIN_VERSION || "2.0");
+
+// Version single-sourced from package.json. PLUGIN_VERSION may override, but in
+// production it must match package.json so templates cannot ship stale metadata.
+const packageVersion = normalizeVersion(require("./package.json").version);
+const envVersionOverride = normalizeVersion(process.env.PLUGIN_VERSION);
+const resolvedPluginVersion = envVersionOverride || packageVersion;
+
+if (!resolvedPluginVersion) {
+	throw new Error(
+		"[build] Plugin version is empty. Set \"version\" in package.json (or PLUGIN_VERSION in the active .env)."
+	);
+}
+if (envVersionOverride && packageVersion && envVersionOverride !== packageVersion) {
+	const msg = `[build] Version drift: PLUGIN_VERSION="${envVersionOverride}" != package.json="${packageVersion}".`;
+	if (IS_PROD) throw new Error(`${msg} Reconcile them before a production build.`);
+	console.warn(`${msg} Using "${resolvedPluginVersion}" for this dev build.`);
+}
+process.env.PLUGIN_VERSION = resolvedPluginVersion;
+const envPluginVersion = resolvedPluginVersion;
 const envPluginId = String(
 	process.env.DOR_UXP_PLUGIN_ID || process.env.DOR_LICENSE_V2_PLUGIN_ID || manifest.id || ""
 ).trim();

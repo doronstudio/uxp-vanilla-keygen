@@ -10,6 +10,7 @@ const OFFLINE_TTL_MS = Number(process.env.DOR_EXPIRE_LICENSE_SECONDS || 172800) 
 
 const USER_MESSAGES = {
 	invalid: "Invalid license key.",
+	product_mismatch: "This license key is for a different product. Please contact support.",
 	suspended: "This license is currently suspended. Please contact support.",
 	expired: "This license has expired.",
 	machine_limit: "Device limit reached. Please deactivate another device or contact support.",
@@ -150,6 +151,10 @@ function isProductAllowed(payload) {
 	return productRelationship?.id === productId;
 }
 
+function getProductId(payload) {
+	return payload?.data?.relationships?.product?.data?.id || "";
+}
+
 function firstMachineId(payload) {
 	return payload?.data?.relationships?.machines?.data?.[0]?.id;
 }
@@ -227,7 +232,15 @@ async function validateKey(licenseKey, fingerprint) {
 	}
 
 	if (!isProductAllowed(payload)) {
-		return { success: false, reason: "invalid", message: USER_MESSAGES.invalid, payload };
+		return {
+			success: false,
+			reason: "product_mismatch",
+			message: USER_MESSAGES.product_mismatch,
+			licenseId,
+			payload,
+			expectedProductId: licensingConfig.keygen.productId,
+			actualProductId: getProductId(payload)
+		};
 	}
 
 	if (payload?.meta?.valid === true) {

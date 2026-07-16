@@ -103,7 +103,7 @@ Use `DOR_LICENSE_ENABLED=false` only for local development builds where you want
 
 1. During development, use `.env.development` with `npm run dev` while testing changes in UDT.
 2. For release, set production Keygen and update-check values in `.env.production`.
-3. Make sure `PLUGIN_VERSION`, `DOR_LOCAL_VERSION`, and `public/manifest.json` version match.
+3. Update `package.json` version. Webpack writes this into `dist/manifest.json`; if `PLUGIN_VERSION` is set, it must match `package.json`. Bump `DOR_LOCAL_VERSION` when you need cache invalidation.
 4. Run the production build:
 
 ```bash

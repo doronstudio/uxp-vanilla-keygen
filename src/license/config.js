@@ -76,7 +76,9 @@ function parseStringList(value) {
 }
 
 const allowedItemIds = parseItemIds(process.env.DOR_LICENSE_V2_ALLOWED_ITEM_IDS);
-const pluginVersion = envString(process.env.PLUGIN_VERSION || "2.0") || "2.0";
+// Version is injected by webpack (single-sourced from package.json). "0.0.0" is
+// deliberately below normal releases if injection ever fails.
+const pluginVersion = envString(process.env.PLUGIN_VERSION) || "0.0.0";
 const updateChannel =
 	envString(process.env.DOR_LICENSE_V2_UPDATE_CHANNEL) || envString(process.env.DOR_UPDATE_CHANNEL) || "production";
 const allowedUpdateChannels = parseStringList(process.env.DOR_LICENSE_V2_ALLOWED_UPDATE_CHANNELS);
