@@ -146,7 +146,7 @@ async function handleSubmit(evt) {
 		const httpStatusSuffix = result.status ? ` (HTTP ${result.status})` : "";
 		let message = "Could not contact the license server. Please check your internet/VPN/firewall and try again.";
 
-		if (["suspended", "expired", "machine_limit", "migration_required"].includes(result.reason)) {
+		if (["suspended", "expired", "machine_limit", "migration_required", "product_mismatch"].includes(result.reason)) {
 			message = backendMessage || message;
 		} else if (selectedProvider === "keygen" && result.reason === "invalid") {
 			message = backendMessage || "Invalid license key.";
