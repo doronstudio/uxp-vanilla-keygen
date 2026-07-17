@@ -76,7 +76,6 @@ Set these values in `.env.development` and `.env.production`:
 
 ```env
 DOR_LICENSE_ENABLED="true"
-DOR_LICENSING_MODE="keygen_only"
 DOR_KEYGEN_BASE_URL=""
 DOR_KEYGEN_ACCOUNT_ID=""
 DOR_KEYGEN_PRODUCT_ID=""
