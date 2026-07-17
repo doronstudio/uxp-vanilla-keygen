@@ -2,7 +2,7 @@ import { initialize, updateState } from "./ui";
 import { entrypoints } from "uxp";
 import ps from "photoshop";
 import protection, { resetReusableData } from "./protected-service";
-import { clearAll, getDecodedToken, getDeviceUniqueId } from "./utils";
+import { clearAll, getDeviceUniqueId } from "./utils";
 import { emitLicenseEvent } from "./telemetry";
 import { deactivateKeygenMachine, getStoredKeygenActivation } from "./keygen-service";
 import { checkForPluginUpdate, clearUpdateCheckCache } from "./update-service";
@@ -37,7 +37,6 @@ entrypoints.setup({
 		},
 		async clearLicense() {
 			const deviceId = await getDeviceUniqueId();
-			const token = await getDecodedToken();
 			const keygenActivation = await getStoredKeygenActivation(deviceId);
 
 			if (keygenActivation?.licenseKey && keygenActivation?.keygenMachineId) {
@@ -66,12 +65,10 @@ entrypoints.setup({
 					activation_expires_at: keygenActivation.expiresAt,
 					offline: false
 				});
-			} else {
+			} else if (keygenActivation) {
 				emitLicenseEvent("license.cleared", {
-					provider: token ? "portal" : "local",
+					provider: "keygen",
 					device_id: deviceId,
-					item_id: token?.item_id,
-					expires_at: token?.expires_at || token?.exp,
 					offline: false
 				});
 			}

@@ -14,7 +14,7 @@ const ALLOWED_EVENT_TYPES = new Set([
 	"license.local_valid",
 	"license.cleared"
 ]);
-const ALLOWED_PROVIDERS = new Set(["portal", "keygen", "local"]);
+const ALLOWED_PROVIDERS = new Set(["keygen"]);
 const ALLOWED_DETAIL_KEYS = new Set([
 	"provider",
 	"device_id",
@@ -153,7 +153,7 @@ export function emitLicenseEvent(type, details = {}) {
 	if (!licenseV2Config.event_url) return;
 	if (!ALLOWED_EVENT_TYPES.has(type)) return;
 
-	if (type === "license.local_valid" && details.provider !== "keygen") {
+	if (type === "license.local_valid" && details.provider === "keygen") {
 		const key = [type, details.provider, details.device_id, details.keygen_license_id, pluginVersion]
 			.filter(Boolean)
 			.join(":");
@@ -166,7 +166,7 @@ export function emitLicenseEvent(type, details = {}) {
 		type,
 		plugin_id: licenseV2Config.plugin_id,
 		plugin_version: pluginVersion,
-		licensing_mode: details.provider === "keygen" ? "keygen" : licensingConfig.mode,
+		licensing_mode: licensingConfig.mode,
 		environment: licensingConfig.environment,
 		update_channel: licenseV2Config.update_channel,
 		timestamp: new Date().toISOString(),

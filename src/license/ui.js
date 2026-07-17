@@ -2,13 +2,10 @@ import {
 	checkLocalToken,
 	checkServerLicense,
 	getLastLocalLicenseFailure,
-	getUserData,
 	isNetworkFailureReason
 } from "./utils";
-import licenseV2Config, { allowsKeygen, licensingConfig } from "./config";
+import licenseV2Config from "./config";
 import ps from "photoshop";
-
-let selectedProvider = licensingConfig.mode === "legacy" ? "portal" : "keygen";
 
 function showSlidersSection() {
 	document.body.classList.remove("auth-page");
@@ -20,11 +17,6 @@ function showLicSection() {
 	document.body.classList.add("auth-page");
 	document.getElementById("LicSection").style.display = "";
 	document.querySelector(".container").style.display = "none";
-}
-
-function handleEmailInput(evt) {
-	evt.target.setAttribute("data-value", evt.target.value);
-	console.log("[Licensing] Email changed.");
 }
 
 function handleSerialInput(evt) {
@@ -61,17 +53,6 @@ function setStatus(message, type = "info") {
 	statusElem.style.display = message ? "" : "none";
 }
 
-function configureLicensingModeUI() {
-	selectedProvider = allowsKeygen() ? "keygen" : "portal";
-
-	const emailElem = document.querySelector(".Email");
-	if (emailElem && selectedProvider === "keygen") {
-		clearInput(emailElem);
-	}
-
-	setStatus("", "info");
-}
-
 let isInitialized = false;
 
 function bindUI() {
@@ -79,49 +60,30 @@ function bindUI() {
 		return;
 	}
 
-	const emailElem = document.querySelector(".Email");
 	const serialElem = document.querySelector(".Serial");
 	const verifyButton = document.querySelector("#VerifyButton");
 
-	if (!emailElem || !serialElem || !verifyButton) {
+	if (!serialElem || !verifyButton) {
 		console.warn("[Licensing] UI not ready yet. Delaying license UI binding.");
 		return;
 	}
 
 	isInitialized = true;
-	emailElem.addEventListener("input", handleEmailInput);
 	serialElem.addEventListener("input", handleSerialInput);
 	verifyButton.addEventListener("click", handleSubmit);
-	configureLicensingModeUI();
-	restoreActivationMetadata();
+	setStatus("", "info");
 	loop();
-}
-
-async function restoreActivationMetadata() {
-	const emailElem = document.querySelector(".Email");
-	const data = await getUserData();
-	if (!emailElem || !data?.email) return;
-
-	emailElem.setAttribute("data-value", data.email);
-	emailElem.value = data.email;
 }
 
 async function handleSubmit(evt) {
 	evt?.preventDefault?.();
 
-	const emailElem = document.querySelector(".Email");
 	const serialElem = document.querySelector(".Serial");
 	const verifyButton = document.querySelector("#VerifyButton");
 
-	const email = getInputValue(emailElem);
 	const serial = getInputValue(serialElem);
 
-	if (selectedProvider === "portal" && (!email || !serial)) {
-		await ps.app.showAlert("Please enter your customer email and license code.");
-		return;
-	}
-
-	if (selectedProvider === "keygen" && !serial) {
+	if (!serial) {
 		await ps.app.showAlert("Please enter your new license key.");
 		return;
 	}
@@ -131,51 +93,33 @@ async function handleSubmit(evt) {
 
 	let result;
 	try {
-		result = await checkServerLicense(email, serial, selectedProvider);
+		result = await checkServerLicense(serial);
 	} finally {
 		verifyButton?.classList?.remove("is-validating");
 	}
 
 	if (result.success) {
 		setStatus("Activated.", "success");
-		await ps.app.showAlert(selectedProvider === "keygen" ? "Activation successful." : "Verification successful.");
-		clearInput(emailElem);
+		await ps.app.showAlert("Activation successful.");
 		clearInput(serialElem);
 	} else {
 		const backendMessage = normalizeUserMessage(result.message);
 		const httpStatusSuffix = result.status ? ` (HTTP ${result.status})` : "";
 		let message = "Could not contact the license server. Please check your internet/VPN/firewall and try again.";
 
-		if (["suspended", "expired", "machine_limit", "migration_required", "product_mismatch"].includes(result.reason)) {
+		if (["suspended", "expired", "machine_limit", "product_mismatch"].includes(result.reason)) {
 			message = backendMessage || message;
-		} else if (selectedProvider === "keygen" && result.reason === "invalid") {
-			message = backendMessage || "Invalid license key.";
 		} else if (result.reason === "invalid") {
-			message =
-				backendMessage ||
-				`Verification failed. Incorrect data or you have exceeded the allowed number of devices.${httpStatusSuffix}`;
+			message = backendMessage || "Invalid license key.";
 		} else if (
 			[
-				"token_missing",
-				"bad_signature",
-				"bad_issuer",
-				"bad_audience",
-				"bad_flow",
-				"bad_plugin_id",
-				"bad_item_id",
-				"bad_device_id",
-				"bad_algorithm",
-				"malformed_token",
-				"expired",
-				"token_verification_failed"
+				"server_error",
+				"invalid_json_response",
+				"response_read_error"
 			].includes(result.reason)
 		) {
 			message =
-				backendMessage || "The license server response could not be verified. Please try again or contact support.";
-		} else if (["server_error", "invalid_json_response", "response_read_error"].includes(result.reason)) {
-			message =
-				backendMessage ||
-				`The license server returned an unexpected response. Please try again shortly or contact support.${httpStatusSuffix}`;
+				backendMessage || `The license server returned an unexpected response. Please try again shortly or contact support.${httpStatusSuffix}`;
 		} else if (result.reason === "config") {
 			message = "License verification is temporarily unavailable due to plugin configuration. Please contact support.";
 		} else if (isNetworkFailureReason(result.reason)) {

@@ -1,5 +1,4 @@
 const { parse } = require("@babel/parser");
-const traverse = require("@babel/traverse").default;
 const t = require("@babel/types");
 
 const FAKE_NAMES = [

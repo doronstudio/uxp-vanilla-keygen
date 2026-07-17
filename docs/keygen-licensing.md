@@ -2,10 +2,9 @@
 
 This starter supports a Keygen-only license flow by default. The license screen asks for a license key, validates it with Keygen, creates a machine activation for the current device, and stores the activation in UXP secure storage for offline relaunches.
 
-## Recommended Mode
+## Keygen Settings
 
 ```env
-DOR_LICENSING_MODE="keygen_only"
 DOR_KEYGEN_BASE_URL="https://api.keygen.sh"
 DOR_KEYGEN_ACCOUNT_ID="your-keygen-account-id"
 DOR_KEYGEN_PRODUCT_ID="your-keygen-product-id"
